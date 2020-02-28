@@ -1,7 +1,6 @@
 package Package;
 
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.io.IOException;
@@ -10,26 +9,22 @@ import java.util.logging.Logger;
 
 public class Server {
 	static int port=5000;
+	String[][] chats;
+	
+	
 	public static void main(String[] args) {
 		ServerSocket servidor = null;
 		Socket clientSocket = null;
 		DataInputStream inputStream;
-		DataOutputStream outputStream;
+	
 		try {
 			buscaPuerto(servidor, clientSocket);
 			servidor = new ServerSocket(port);
-		
 		while (true) {
 			clientSocket = servidor.accept();
 			inputStream = new DataInputStream(clientSocket.getInputStream());
-			outputStream = new DataOutputStream(clientSocket.getOutputStream());
-
 			String mensaje = inputStream.readUTF();
 			System.out.println("Mensaje recibido por el servidor: " + mensaje);
-
-			mensaje = "Hola Mundo desde el servidor";
-			outputStream.writeUTF("Respuesta: " + mensaje);
-
 			clientSocket.close();
 			System.out.println("Cliente desconectado");
 		}
@@ -54,12 +49,14 @@ public class Server {
 
 			} catch (Exception e2) {
 				System.out.println("Puerto "+puerto+" ocupado. Verificando en el siguiente...");
-				
 				puerto++;
 				// TODO: handle exception
 			}
 		}
-		
+	}
 	
+	public void separaMensaje(String mensaje) {
+		
+		
 	}
 }
