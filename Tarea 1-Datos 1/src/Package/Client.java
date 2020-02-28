@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Client {
+	
 
 	public static void main(String[] args) {
 		final String host="127.0.0.1";
