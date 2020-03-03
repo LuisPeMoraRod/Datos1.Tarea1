@@ -158,44 +158,23 @@ public class GUI_chat extends javax.swing.JFrame implements Observer {
 		}
 
 	}
-
-	public static void main(String args[]) {
-		
-		for (int i = 0; i < 3; i++) {
-			try {
-				for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-					if ("Nimbus".equals(info.getName())) {
-						javax.swing.UIManager.setLookAndFeel(info.getClassName());
-						break;
-					}
-				}
-			} catch (ClassNotFoundException ex) {
-				java.util.logging.Logger.getLogger(GUI_chat.class.getName()).log(java.util.logging.Level.SEVERE, null,
-						ex);
-			} catch (InstantiationException ex) {
-				java.util.logging.Logger.getLogger(GUI_chat.class.getName()).log(java.util.logging.Level.SEVERE, null,
-						ex);
-			} catch (IllegalAccessException ex) {
-				java.util.logging.Logger.getLogger(GUI_chat.class.getName()).log(java.util.logging.Level.SEVERE, null,
-						ex);
-			} catch (javax.swing.UnsupportedLookAndFeelException ex) {
-				java.util.logging.Logger.getLogger(GUI_chat.class.getName()).log(java.util.logging.Level.SEVERE, null,
-						ex);
-			}
-			// </editor-fold>
-			// </editor-fold>
-
-			/* Create and display the form */
-			java.awt.EventQueue.invokeLater(new Runnable() {
-				public void run() {
-					new GUI_chat().setVisible(true);
-				}
-			});
+	
+				
+			
+	
+	public static void generaVentanas(int cantidad) {
+		for (int i=0; i<cantidad; i++) {
+			GUI_sencilla window= new GUI_sencilla();
+			Thread hiloChats= new Thread(window);
+			hiloChats.start();
+			
 		}
-
+		
 	}
 	
+	public static void main(String args[]) {
+		
+		generaVentanas(3);
 
-	
-
+	}
 }

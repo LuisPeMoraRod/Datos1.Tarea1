@@ -1,46 +1,33 @@
 package com.TEC.Datos1.Tarea1;
 
-import javax.swing.*;
+class GUI_sencilla implements Runnable {
 
-class GUI_sencilla extends javax.swing.JFrame{
-	private javax.swing.JButton btnEnviar;
-	private javax.swing.JScrollPane jScrollPane1;
-	private javax.swing.JScrollPane jScrollPane2;
-	private javax.swing.JTextArea txtTexto;
-	private javax.swing.JTextField txtTextoEnviar;
-	private javax.swing.JFrame frame;
-	// End of variables declaration//GEN-END:variables
-	/**
-	 * 
-	 */
-	
-	public GUI_sencilla(){
-		creaVentana();
-	}
-	private static final long serialVersionUID = 1L;
-	private void creaVentana() {
-		frame = new JFrame();// creating instance of JFrame
+	public void run() {
+		try {
+			for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+				if ("Nimbus".equals(info.getName())) {
+					javax.swing.UIManager.setLookAndFeel(info.getClassName());
+					break;
+				}
+			}
+		} catch (ClassNotFoundException ex) {
+			java.util.logging.Logger.getLogger(GUI_chat.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+		} catch (InstantiationException ex) {
+			java.util.logging.Logger.getLogger(GUI_chat.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+		} catch (IllegalAccessException ex) {
+			java.util.logging.Logger.getLogger(GUI_chat.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+		} catch (javax.swing.UnsupportedLookAndFeelException ex) {
+			java.util.logging.Logger.getLogger(GUI_chat.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+		}
+		// </editor-fold>
+		// </editor-fold>
 
-		btnEnviar = new JButton("Enviar");// creating instance of JButton
-		btnEnviar.setBounds(130, 100, 100, 40);// x axis, y axis, width, height
-		
-		jScrollPane1 = new javax.swing.JScrollPane();
-		jScrollPane2 = new javax.swing.JScrollPane();
-		txtTexto = new javax.swing.JTextArea();
-		txtTextoEnviar = new javax.swing.JTextField();
+		/* Create and display the form */
+		java.awt.EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				new GUI_chat().setVisible(true);
+			}
+		});
 
-
-		frame.add(btnEnviar);// adding button in JFrame
-		
-		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-		setTitle("Chat de puerto " + Server.port);
-
-		frame.setSize(400, 500);// 400 width and 500 height
-		frame.setLayout(null);// using no layout managers
-		frame.setVisible(true);// making the frame visible
-		
-	}
-	public static void main(String[] args) {
-		
 	}
 }
