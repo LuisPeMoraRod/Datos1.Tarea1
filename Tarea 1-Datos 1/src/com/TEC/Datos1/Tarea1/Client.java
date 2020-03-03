@@ -8,9 +8,11 @@ import java.util.logging.Logger;
 
 public class Client implements Runnable{
     private String send;
+    private String port;
 
-    public Client(String send) {
+    public Client(String port,String send) {
         this.send = send;
+        this.port=port;
     }
     
 	@Override
@@ -19,13 +21,11 @@ public class Client implements Runnable{
 		DataOutputStream outputStream;
 		try {
 			
-			String[] mensaje=Server.separaMensaje(send);
-			int port = esPuertoValido(mensaje[0]);
-			if (0<port && port<65535) {
-				Socket socketClient = new Socket (host,port);
+			int portNum = esPuertoValido(port);
+			if (0<portNum && portNum<65535) {
+				Socket socketClient = new Socket (host,portNum);
 				outputStream = new DataOutputStream(socketClient.getOutputStream());
 				outputStream.writeUTF(send);
-				System.out.println(send);
 				socketClient.close();
 			}
 			else {

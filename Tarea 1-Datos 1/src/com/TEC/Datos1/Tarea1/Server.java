@@ -6,31 +6,37 @@ import java.net.Socket;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.StringTokenizer;
+import java.util.Observable;
 
-public class Server implements Runnable{
+@SuppressWarnings("deprecation")
+public class Server extends Observable implements Runnable{
 	static int port=5000;
+	static int myport;
+	private int mipuerto;
 	
 	@Override
 	public void run() {
 		ServerSocket servidor = null;
 		Socket clientSocket = null;
 		DataInputStream inputStream;
-		List<String[]> chats=new ArrayList<String[]>();
-		chats.size();
-	
+		
 		try {
-			buscaPuerto(servidor, clientSocket);
-			servidor = new ServerSocket(port);
+			myport=buscaPuerto(servidor, clientSocket);
+			servidor = new ServerSocket(myport);
+			mipuerto=servidor.getLocalPort();
 		while (true) {
 			clientSocket = servidor.accept();
 			inputStream = new DataInputStream(clientSocket.getInputStream());
 			String mensaje = inputStream.readUTF();
 			String [] mensajePuerto=separaMensaje(mensaje); //Message separated in an array: mensajePuerto[0]=port and mensajePuerto[1]=message
-			System.out.println("Puerto: "+mensajePuerto[0]);
-			System.out.println("Mensaje recibido por el servidor: " + mensajePuerto[1]);
+			System.out.println("Puerto emisor: "+mensajePuerto[0]);
+			System.out.println("Mensaje recibido por el puerto"+myport+":" + mensajePuerto[1]);
+			
+			 this.setChanged();
+             this.notifyObservers(mensajePuerto[0]+": "+mensajePuerto[1]);
+             this.clearChanged();
+             
 			clientSocket.close();
 			System.out.println("Cliente desconectado");
 		}
@@ -41,7 +47,7 @@ public class Server implements Runnable{
 		
 	}
 	
-	public static void buscaPuerto(ServerSocket servidor, Socket clientSocket) {
+	public static int buscaPuerto(ServerSocket servidor, Socket clientSocket) {
 		/*
 		 * Method that searches a port within the communication can be done with the socket.
 		 * The method uses the static attribute "port" that changes every time a new free port is 
@@ -66,6 +72,7 @@ public class Server implements Runnable{
 				// TODO: handle exception
 			}
 		}
+		return puerto;
 	}
 	
 	public static String[] separaMensaje(String mensaje) {
@@ -82,6 +89,10 @@ public class Server implements Runnable{
 		}
 		return messageArray;
 				
+	}
+	
+	public int getPort() {
+		return mipuerto;
 	}
 	
 }
