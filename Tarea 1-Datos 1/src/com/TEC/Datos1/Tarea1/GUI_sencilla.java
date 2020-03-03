@@ -1,6 +1,9 @@
 package com.TEC.Datos1.Tarea1;
 
 class GUI_sencilla implements Runnable {
+	/*
+	 * Class that creates a single chat window. Implements Runnable so that it can be called from a thread in the GUI_chat class.
+	 */
 
 	public void run() {
 		try {
@@ -22,7 +25,7 @@ class GUI_sencilla implements Runnable {
 		// </editor-fold>
 		// </editor-fold>
 
-		/* Create and display the form */
+		/* Create and display the window */
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				new GUI_chat().setVisible(true);

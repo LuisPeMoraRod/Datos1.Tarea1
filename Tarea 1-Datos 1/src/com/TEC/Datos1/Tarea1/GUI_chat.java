@@ -6,22 +6,21 @@ import java.util.ListIterator;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.JFrame;
+
+import javax.swing.*;
+import java.awt.*;
 
 @SuppressWarnings("deprecation")
 
 public class GUI_chat extends javax.swing.JFrame implements Observer {
 	// Variables declaration - do not modify//GEN-BEGIN:variables
-	private javax.swing.JButton btnEnviar;
-	private javax.swing.JScrollPane jScrollPane1;
-	private javax.swing.JTextArea txtTexto;
-	private javax.swing.JTextField txtTextoEnviar;
-	private javax.swing.JTextField txtPuertoEnviar;
-	
-	private javax.swing.JButton btnIniciar;
-	private javax.swing.JTextField txtCantidad;
-	private javax.swing.JLabel txtLabel;
-	
+	private JButton btnEnviar;
+	private JScrollPane jScrollPane1;
+	private JTextArea txtTexto;
+	private JTextField txtTextoEnviar;
+	private JTextField txtPuertoEnviar;
+		
+	static JFrame frame;
 	
 
 	private int[] puertos;
@@ -172,9 +171,58 @@ public class GUI_chat extends javax.swing.JFrame implements Observer {
 		
 	}
 	
+	private static void btnExecute(java.awt.event.ActionEvent evt,String cantidad) {// GEN-FIRST:event_btnEnviarActionPerformed
+		int windows=Integer.parseInt(cantidad.trim());
+		generaVentanas(windows);
+		frame.dispose();
+	
+	}
 	public static void main(String args[]) {
+		 // Creando el Marco        
+        frame = new JFrame("Chats");       
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);       
+        frame.setSize(400, 100);        
+ 
+        // Creando MenuBar y agregando componentes   
+        //JMenuBar mb = new JMenuBar();       
+        //JMenu m1 = new JMenu("ARCHIVO");       
+        //JMenu m2 = new JMenu("Ayuda");       
+        //mb.add(m1);       
+        //mb.add(m2);       
+        //JMenuItem m11 = new JMenuItem("Abrir");       
+        //JMenuItem m22 = new JMenuItem("Guardar como");       
+        //m1.add(m11);       
+        //m2.add(m22);        
+ 
+        // Creando el panel en la parte inferior y agregando componentes       
+        JPanel panel1 = new JPanel(); // el panel no está visible en la salida    
+        JPanel panel2 = new JPanel();
+        JLabel label = new JLabel("Introduzca la cantidad de ventanas de chats que desea abrir: ");       
+        JTextField texto = new JTextField(2); // acepta hasta 10 caracteres        
+        JButton send = new JButton("Ejecutar");  
+        send.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				String windows=texto.getText();
+				btnExecute(evt, windows);
+			}
+		});
+        //JButton reset = new JButton("Restablecer");       
+        panel1.add(label); // Componentes agregados usando Flow Layout     
+        //panel.add(etiqueta); // Componentes agregados usando Flow Layout      
+        panel1.add(texto);       
+        panel2.add(send);       
+        //panel.add(reset);        
+ 
+        // Área de texto en el centro    
+        //JTextArea ta = new JTextArea();        
+ 
+        // Agregar componentes al marco.      
+        frame.getContentPane().add(BorderLayout.SOUTH, panel2);       
+        frame.getContentPane().add(BorderLayout.NORTH, panel1);  
+        //frame.getContentPane().add(BorderLayout.NORTH, mb);       
+        //frame.getContentPane().add(BorderLayout.CENTER, ta);       
+        frame.setVisible(true);   
 		
-		generaVentanas(3);
 
 	}
 }
