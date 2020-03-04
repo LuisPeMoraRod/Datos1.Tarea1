@@ -36,6 +36,7 @@ public class Client implements Runnable{
 			
 		} catch (IOException ex) {
 			Logger.getLogger(Client.class.getName()).log(Level.SEVERE,null,ex);
+			
 			// TODO: handle exception
 		}
 		

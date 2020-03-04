@@ -148,8 +148,13 @@ public class GUI_chat extends javax.swing.JFrame implements Observer {
 			this.txtTexto.setText(map.get(puerto));
 
 			// historialChats(msj[0], mensaje);
+			try {
 			Thread t = new Thread(cliente);
-			t.start();
+			t.start();}
+			catch (Exception e) {
+				// TODO: handle exception
+				this.txtTexto.setText("Error al enviar. Puerto incorrecto");
+			}
 			
 		
 	}
