@@ -22,8 +22,7 @@ class GUI_sencilla implements Runnable {
 		} catch (javax.swing.UnsupportedLookAndFeelException ex) {
 			java.util.logging.Logger.getLogger(GUI_chat.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 		}
-		// </editor-fold>
-		// </editor-fold>
+		
 
 		/* Create and display the window */
 		java.awt.EventQueue.invokeLater(new Runnable() {

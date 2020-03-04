@@ -6,31 +6,29 @@ import java.util.ListIterator;
 import java.util.Observable;
 import java.util.Observer;
 
-
 import javax.swing.*;
 import java.awt.*;
+
 
 @SuppressWarnings("deprecation")
 
 public class GUI_chat extends javax.swing.JFrame implements Observer {
 	// Variables declaration - do not modify//GEN-BEGIN:variables
 	private JButton btnEnviar;
+	private JButton btnChats;
 	private JScrollPane jScrollPane1;
 	private JTextArea txtTexto;
 	private JTextField txtTextoEnviar;
 	private JTextField txtPuertoEnviar;
-		
+	private JLabel puerto;
+
 	static JFrame frame;
-	
 
 	private int[] puertos;
 	private String[] registroMsjs;
-	
+
 	Server servidor = new Server();
-	// End of variables declaration//GEN-END:variables
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private List<String[]> chats = new ArrayList<String[]>();
 
@@ -39,25 +37,29 @@ public class GUI_chat extends javax.swing.JFrame implements Observer {
 		servidor.addObserver(this);
 		Thread thread = new Thread(servidor);// Thread used to make the server execute simultaneously with the GUI
 		thread.start();
-		initComponents();
-		this.getRootPane().setDefaultButton(this.btnEnviar);
+		initComponents1();
+		// this.getRootPane().setDefaultButton(this.btnEnviar);
 
 	}
 
 	// <editor-fold defaultstate="collapsed" desc="Generated
 	// Code">//GEN-BEGIN:initComponents
 
-	private void initComponents() {
-
-		jScrollPane1 = new javax.swing.JScrollPane();
-		txtTexto = new javax.swing.JTextArea();
-		btnEnviar = new javax.swing.JButton();
-		txtTextoEnviar = new javax.swing.JTextField();
-		txtPuertoEnviar = new javax.swing.JTextField();
-
-		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+	private void initComponents1() {
+		
+		jScrollPane1 = new JScrollPane();
+		txtTexto = new JTextArea();
+		btnEnviar = new JButton();
+		txtTextoEnviar = new JTextField(25);
+		txtPuertoEnviar = new JTextField(3);
+		puerto = new JLabel("Puerto: ");
+		btnChats = new JButton("Chats");
+		
+		 Popup pop = new Popup(); 
+        
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle("Chat de puerto " + Server.port);
-
+		
 		txtTexto.setColumns(20);
 		txtTexto.setRows(5);
 		jScrollPane1.setViewportView(txtTexto);
@@ -68,47 +70,69 @@ public class GUI_chat extends javax.swing.JFrame implements Observer {
 				btnEnviarActionPerformed(evt);
 			}
 		});
+		
+		btnEnviar.setText("Enviar");
+		btnEnviar.addActionListener(pop);
+		btnEnviar.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				
+				
+			}
+		});
 
-		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+		GroupLayout layout = new GroupLayout(getContentPane());	
 		getContentPane().setLayout(layout);
 		layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
 				javax.swing.GroupLayout.Alignment.TRAILING,
 				layout.createSequentialGroup().addContainerGap()
 						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-								.addGroup(layout.createSequentialGroup().addComponent(txtTextoEnviar)
+								.addGroup(layout.createSequentialGroup()
+										.addComponent(puerto)
 										.addComponent(txtPuertoEnviar)
+										.addComponent(txtTextoEnviar)
+										.addComponent(btnEnviar)
 										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-										.addComponent(btnEnviar, javax.swing.GroupLayout.PREFERRED_SIZE, 114,
-												javax.swing.GroupLayout.PREFERRED_SIZE))
-								.addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE))
+										)
+								.addGroup(layout.createSequentialGroup()
+										.addComponent(btnChats)
+										.addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)))
 						.addContainerGap()));
-		layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+		
+		layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
 				.addGroup(layout.createSequentialGroup().addContainerGap()
-						.addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 237,
-								javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-								.addComponent(btnEnviar, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
-								.addComponent(txtTextoEnviar).addComponent(txtPuertoEnviar))
+						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+								.addComponent(btnChats)
+								.addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 237,
+										GroupLayout.PREFERRED_SIZE))
+						.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+								.addComponent(puerto)
+								.addComponent(txtPuertoEnviar)
+								.addComponent(txtTextoEnviar)
+								.addComponent(btnEnviar)
+								)
+						
 						.addContainerGap()));
-
+		 
 		pack();
 	}// </editor-fold>//GEN-END:initComponents
+
 	
-	
+
+	// </editor-fold>//GEN-END:initComponents
 
 	private void btnEnviarActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btnEnviarActionPerformed
 
 		String mensaje = this.txtTextoEnviar.getText();
 		this.txtTextoEnviar.setText("");
-		String puerto =this.txtPuertoEnviar.getText();
-		String mipuerto=String.valueOf(servidor.getPort());
-		this.txtTexto.append("You: "+mensaje+"\n");
+		String puerto = this.txtPuertoEnviar.getText();
+		String mipuerto = String.valueOf(servidor.getPort());
+		this.txtTexto.append("You: " + mensaje + "\n");
 
-		Client cliente = new Client(puerto,mipuerto+"$"+mensaje);
-		//String[] msj = Server.separaMensaje(mensaje);
+		Client cliente = new Client(puerto, mipuerto + "$" + mensaje);
+		// String[] msj = Server.separaMensaje(mensaje);
 
-		//historialChats(msj[0], mensaje);
+		// historialChats(msj[0], mensaje);
 		Thread t = new Thread(cliente);
 		t.start();
 
@@ -118,7 +142,7 @@ public class GUI_chat extends javax.swing.JFrame implements Observer {
 	 * @param args the command line arguments
 	 * 
 	 */
-	
+
 	@Override
 	public void update(Observable o, Object arg) {
 		this.txtTexto.append((String) arg + "\n");
@@ -157,72 +181,54 @@ public class GUI_chat extends javax.swing.JFrame implements Observer {
 		}
 
 	}
-	
-				
-			
-	
+
 	public static void generaVentanas(int cantidad) {
-		for (int i=0; i<cantidad; i++) {
-			GUI_sencilla window= new GUI_sencilla();
-			Thread hiloChats= new Thread(window);
+		for (int i = 0; i < cantidad; i++) {
+			GUI_sencilla window = new GUI_sencilla();
+			Thread hiloChats = new Thread(window);
 			hiloChats.start();
-			
+
 		}
-		
+
 	}
-	
-	private static void btnExecute(java.awt.event.ActionEvent evt,String cantidad) {// GEN-FIRST:event_btnEnviarActionPerformed
-		int windows=Integer.parseInt(cantidad.trim());
+
+	private static void btnExecute(java.awt.event.ActionEvent evt, String cantidad) {// GEN-FIRST:event_btnEnviarActionPerformed
+		int windows = Integer.parseInt(cantidad.trim());
 		generaVentanas(windows);
 		frame.dispose();
-	
+
 	}
+
+	private void creaInicio() {
+
+	}
+
 	public static void main(String args[]) {
-		 // Creando el Marco        
-        frame = new JFrame("Chats");       
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);       
-        frame.setSize(400, 100);        
- 
-        // Creando MenuBar y agregando componentes   
-        //JMenuBar mb = new JMenuBar();       
-        //JMenu m1 = new JMenu("ARCHIVO");       
-        //JMenu m2 = new JMenu("Ayuda");       
-        //mb.add(m1);       
-        //mb.add(m2);       
-        //JMenuItem m11 = new JMenuItem("Abrir");       
-        //JMenuItem m22 = new JMenuItem("Guardar como");       
-        //m1.add(m11);       
-        //m2.add(m22);        
- 
-        // Creando el panel en la parte inferior y agregando componentes       
-        JPanel panel1 = new JPanel(); // el panel no está visible en la salida    
-        JPanel panel2 = new JPanel();
-        JLabel label = new JLabel("Introduzca la cantidad de ventanas de chats que desea abrir: ");       
-        JTextField texto = new JTextField(2); // acepta hasta 10 caracteres        
-        JButton send = new JButton("Ejecutar");  
-        send.addActionListener(new java.awt.event.ActionListener() {
+		// Creando el Marco
+
+		frame = new JFrame("Chats");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setSize(400, 100);
+
+		// Creando el panel en la parte inferior y agregando componentes
+		JPanel panel1 = new JPanel(); // el panel no está visible en la salida
+		JPanel panel2 = new JPanel();
+		JLabel label = new JLabel("Introduzca la cantidad de ventanas de chats que desea abrir: ");
+		JTextField texto = new JTextField(2); // acepta hasta 10 caracteres
+		JButton send = new JButton("Ejecutar");
+		send.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				String windows=texto.getText();
+				String windows = texto.getText();
 				btnExecute(evt, windows);
 			}
 		});
-        //JButton reset = new JButton("Restablecer");       
-        panel1.add(label); // Componentes agregados usando Flow Layout     
-        //panel.add(etiqueta); // Componentes agregados usando Flow Layout      
-        panel1.add(texto);       
-        panel2.add(send);       
-        //panel.add(reset);        
- 
-        // Área de texto en el centro    
-        //JTextArea ta = new JTextArea();        
- 
-        // Agregar componentes al marco.      
-        frame.getContentPane().add(BorderLayout.SOUTH, panel2);       
-        frame.getContentPane().add(BorderLayout.NORTH, panel1);  
-        //frame.getContentPane().add(BorderLayout.NORTH, mb);       
-        //frame.getContentPane().add(BorderLayout.CENTER, ta);       
-        frame.setVisible(true);   
-		
 
+		panel1.add(label);
+		panel1.add(texto);
+		panel2.add(send);
+
+		frame.getContentPane().add(BorderLayout.SOUTH, panel2);
+		frame.getContentPane().add(BorderLayout.NORTH, panel1);
+		frame.setVisible(true);
 	}
 }
