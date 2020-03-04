@@ -32,7 +32,10 @@ public class Server extends Observable implements Runnable{
 			String [] mensajePuerto=separaMensaje(mensaje); //Message separated in an array: mensajePuerto[0]=port and mensajePuerto[1]=message
 			System.out.println("Puerto emisor: "+mensajePuerto[0]);
 			System.out.println("Mensaje recibido por el puerto "+myport+":" + mensajePuerto[1]);
-			
+			/*
+			 * This class uses observables so that the objects of the GUI_chat class can notice changes in the information recieved by 
+			 * the server through the socket
+			 */
 			 this.setChanged();
              this.notifyObservers(mensajePuerto[0]+": "+mensajePuerto[1]);
              this.clearChanged();
@@ -92,6 +95,9 @@ public class Server extends Observable implements Runnable{
 	}
 	
 	public int getPort() {
+		/*
+		 * Returns the port where the server is "listening"
+		 */
 		return mipuerto;
 	}
 	

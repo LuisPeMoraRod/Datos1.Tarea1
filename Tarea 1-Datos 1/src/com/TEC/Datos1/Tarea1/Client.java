@@ -7,6 +7,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Client implements Runnable{
+	/*
+	 * Class that send information to a specific port using a socket
+	 * */
+	
+	
     private String send;
     private String port;
 
@@ -19,10 +24,10 @@ public class Client implements Runnable{
 	@Override
 	public void run() {
 		final String host="127.0.0.1";	
-		DataOutputStream outputStream;
+		DataOutputStream outputStream; //object used to send data
 		try {
 			
-			int portNum = esPuertoValido(port);
+			int portNum = esPuertoValido(port); 
 			if (0<portNum && portNum<65535) {
 				Socket socketClient = new Socket (host,portNum);
 				outputStream = new DataOutputStream(socketClient.getOutputStream());
