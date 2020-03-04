@@ -1,14 +1,16 @@
 package com.TEC.Datos1.Tarea1;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.StringTokenizer;
 
 import javax.swing.*;
 import java.awt.*;
-
 
 @SuppressWarnings("deprecation")
 
@@ -23,14 +25,15 @@ public class GUI_chat extends javax.swing.JFrame implements Observer {
 	private JLabel puerto;
 
 	static JFrame frame;
+	static int windows;
+	private  Map<String, String> map = new HashMap<>(); 
 
-	private int[] puertos;
-	private String[] registroMsjs;
+
 
 	Server servidor = new Server();
 
 	private static final long serialVersionUID = 1L;
-	private List<String[]> chats = new ArrayList<String[]>();
+
 
 	public GUI_chat() {
 
@@ -46,7 +49,7 @@ public class GUI_chat extends javax.swing.JFrame implements Observer {
 	// Code">//GEN-BEGIN:initComponents
 
 	private void initComponents1() {
-		
+
 		jScrollPane1 = new JScrollPane();
 		txtTexto = new JTextArea();
 		btnEnviar = new JButton();
@@ -54,12 +57,12 @@ public class GUI_chat extends javax.swing.JFrame implements Observer {
 		txtPuertoEnviar = new JTextField(3);
 		puerto = new JLabel("Puerto: ");
 		btnChats = new JButton("Chats");
-		
-		 Popup pop = new Popup(); 
-        
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+		Popup pop = new Popup();
+
+		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle("Chat de puerto " + Server.port);
-		
+
 		txtTexto.setColumns(20);
 		txtTexto.setRows(5);
 		jScrollPane1.setViewportView(txtTexto);
@@ -70,54 +73,40 @@ public class GUI_chat extends javax.swing.JFrame implements Observer {
 				btnEnviarActionPerformed(evt);
 			}
 		});
-		
+
 		btnEnviar.setText("Enviar");
 		btnEnviar.addActionListener(pop);
 		btnEnviar.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				
-				
+
 			}
 		});
 
-		GroupLayout layout = new GroupLayout(getContentPane());	
+		GroupLayout layout = new GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
 		layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
 				javax.swing.GroupLayout.Alignment.TRAILING,
-				layout.createSequentialGroup().addContainerGap()
-						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-								.addGroup(layout.createSequentialGroup()
-										.addComponent(puerto)
-										.addComponent(txtPuertoEnviar)
-										.addComponent(txtTextoEnviar)
-										.addComponent(btnEnviar)
-										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-										)
-								.addGroup(layout.createSequentialGroup()
-										.addComponent(btnChats)
-										.addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)))
+				layout.createSequentialGroup().addContainerGap().addGroup(layout
+						.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+						.addGroup(layout.createSequentialGroup().addComponent(puerto).addComponent(txtPuertoEnviar)
+								.addComponent(txtTextoEnviar).addComponent(btnEnviar)
+								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
+						.addGroup(layout.createSequentialGroup().addComponent(btnChats).addComponent(jScrollPane1,
+								javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)))
 						.addContainerGap()));
-		
-		layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-				.addGroup(layout.createSequentialGroup().addContainerGap()
-						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-								.addComponent(btnChats)
-								.addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 237,
-										GroupLayout.PREFERRED_SIZE))
-						.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-								.addComponent(puerto)
-								.addComponent(txtPuertoEnviar)
-								.addComponent(txtTextoEnviar)
-								.addComponent(btnEnviar)
-								)
-						
-						.addContainerGap()));
-		 
+
+		layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(layout
+				.createSequentialGroup().addContainerGap()
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING).addComponent(btnChats)
+						.addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 237, GroupLayout.PREFERRED_SIZE))
+				.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING).addComponent(puerto)
+						.addComponent(txtPuertoEnviar).addComponent(txtTextoEnviar).addComponent(btnEnviar))
+
+				.addContainerGap()));
+
 		pack();
 	}// </editor-fold>//GEN-END:initComponents
-
-	
 
 	// </editor-fold>//GEN-END:initComponents
 
@@ -130,7 +119,13 @@ public class GUI_chat extends javax.swing.JFrame implements Observer {
 		this.txtTexto.append("You: " + mensaje + "\n");
 
 		Client cliente = new Client(puerto, mipuerto + "$" + mensaje);
-		// String[] msj = Server.separaMensaje(mensaje);
+		if (map.containsKey(mipuerto)) {
+			map.replace(puerto, txtTexto.getText());
+		}
+		else {
+			map.put(puerto,txtTexto.getText());
+		}
+		System.out.println(map);
 
 		// historialChats(msj[0], mensaje);
 		Thread t = new Thread(cliente);
@@ -145,10 +140,36 @@ public class GUI_chat extends javax.swing.JFrame implements Observer {
 
 	@Override
 	public void update(Observable o, Object arg) {
-		this.txtTexto.append((String) arg + "\n");
+		String mensaje = (String) arg;
+		this.txtTexto.append(mensaje + "\n");
+		String[] mensajeSeparado=separaMensaje(mensaje);
+		
+		if (map.containsKey(mensajeSeparado[0])) {/* This conditions edits the map that has the register of all the chats*/
+			map.replace(mensajeSeparado[0], txtTexto.getText());
+		}
+		else {
+			map.put(mensajeSeparado[0],txtTexto.getText());
+		}
+		System.out.println(map);
 	}
 
-	public void historialChats(String Puerto, String mensajes) {
+	
+	public String[] separaMensaje(String mensaje) {
+		/*
+		 * Method that separates the message received from the client into 2 parts: port and message
+		 */
+		StringTokenizer tokens=new StringTokenizer (mensaje,":"); //Uses $ symbol as separator
+		String[] messageArray = new String[tokens.countTokens()];
+		int i = 0;
+		while (tokens.hasMoreTokens()) {
+			String str = tokens.nextToken();
+			messageArray[i] = str;
+			i++;
+		}
+		return messageArray;
+				
+	}
+	/*public void historialChats(String Puerto, String mensajes) {
 		try {
 			if (chats.size() == 0) {
 				String[] conver = { Puerto, mensajes };
@@ -165,7 +186,7 @@ public class GUI_chat extends javax.swing.JFrame implements Observer {
 					// System.out.println(Puerto);
 					String port = conversacion[0].toString();
 					if (port == Puerto) {
-						System.out.println("puta");
+
 						conversacion[1] = mensajes;
 						chats.set(index, conversacion);
 						String[] elemento = chats.get(index);
@@ -180,11 +201,12 @@ public class GUI_chat extends javax.swing.JFrame implements Observer {
 			System.out.println("Exception thrown : " + e);
 		}
 
-	}
+	}*/
 
 	public static void generaVentanas(int cantidad) {
 		for (int i = 0; i < cantidad; i++) {
 			GUI_sencilla window = new GUI_sencilla();
+			
 			Thread hiloChats = new Thread(window);
 			hiloChats.start();
 
@@ -193,13 +215,9 @@ public class GUI_chat extends javax.swing.JFrame implements Observer {
 	}
 
 	private static void btnExecute(java.awt.event.ActionEvent evt, String cantidad) {// GEN-FIRST:event_btnEnviarActionPerformed
-		int windows = Integer.parseInt(cantidad.trim());
+		windows = Integer.parseInt(cantidad.trim());
 		generaVentanas(windows);
 		frame.dispose();
-
-	}
-
-	private void creaInicio() {
 
 	}
 

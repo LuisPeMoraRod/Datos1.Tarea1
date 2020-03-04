@@ -31,7 +31,7 @@ public class Server extends Observable implements Runnable{
 			String mensaje = inputStream.readUTF();
 			String [] mensajePuerto=separaMensaje(mensaje); //Message separated in an array: mensajePuerto[0]=port and mensajePuerto[1]=message
 			System.out.println("Puerto emisor: "+mensajePuerto[0]);
-			System.out.println("Mensaje recibido por el puerto"+myport+":" + mensajePuerto[1]);
+			System.out.println("Mensaje recibido por el puerto "+myport+":" + mensajePuerto[1]);
 			
 			 this.setChanged();
              this.notifyObservers(mensajePuerto[0]+": "+mensajePuerto[1]);
