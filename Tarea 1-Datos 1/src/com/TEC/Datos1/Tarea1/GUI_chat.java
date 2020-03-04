@@ -7,10 +7,13 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 @SuppressWarnings("deprecation")
 
@@ -23,24 +26,22 @@ public class GUI_chat extends javax.swing.JFrame implements Observer {
 	private JTextField txtTextoEnviar;
 	private JTextField txtPuertoEnviar;
 	private JLabel puerto;
+	private JPopupMenu jPopupMenu;
 
 	static JFrame frame;
 	static int windows;
-	private  Map<String, String> map = new HashMap<>(); 
-
-
+	private Map<String, String> map = new HashMap<>();
 
 	Server servidor = new Server();
 
 	private static final long serialVersionUID = 1L;
-
 
 	public GUI_chat() {
 
 		servidor.addObserver(this);
 		Thread thread = new Thread(servidor);// Thread used to make the server execute simultaneously with the GUI
 		thread.start();
-		initComponents1();
+		initComponents();
 		// this.getRootPane().setDefaultButton(this.btnEnviar);
 
 	}
@@ -48,7 +49,7 @@ public class GUI_chat extends javax.swing.JFrame implements Observer {
 	// <editor-fold defaultstate="collapsed" desc="Generated
 	// Code">//GEN-BEGIN:initComponents
 
-	private void initComponents1() {
+	public void initComponents() {
 
 		jScrollPane1 = new JScrollPane();
 		txtTexto = new JTextArea();
@@ -57,8 +58,7 @@ public class GUI_chat extends javax.swing.JFrame implements Observer {
 		txtPuertoEnviar = new JTextField(3);
 		puerto = new JLabel("Puerto: ");
 		btnChats = new JButton("Chats");
-
-		Popup pop = new Popup();
+		jPopupMenu = new JPopupMenu();
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle("Chat de puerto " + Server.port);
@@ -74,11 +74,9 @@ public class GUI_chat extends javax.swing.JFrame implements Observer {
 			}
 		});
 
-		btnEnviar.setText("Enviar");
-		btnEnviar.addActionListener(pop);
-		btnEnviar.addActionListener(new java.awt.event.ActionListener() {
+		btnChats.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-
+				btnChatsAction(evt);
 			}
 		});
 
@@ -109,56 +107,94 @@ public class GUI_chat extends javax.swing.JFrame implements Observer {
 	}// </editor-fold>//GEN-END:initComponents
 
 	// </editor-fold>//GEN-END:initComponents
+	private void btnChatsAction(java.awt.event.ActionEvent evt) {
+		jPopupMenu.show(btnChats, btnChats.getWidth() - jPopupMenu.getWidth(), btnChats.getHeight());
+
+	}
 
 	private void btnEnviarActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btnEnviarActionPerformed
+		
+			String mensaje = this.txtTextoEnviar.getText();
+			this.txtTextoEnviar.setText("");
+			String puerto = this.txtPuertoEnviar.getText();
+			String mipuerto = String.valueOf(servidor.getPort());
+			
 
-		String mensaje = this.txtTextoEnviar.getText();
-		this.txtTextoEnviar.setText("");
-		String puerto = this.txtPuertoEnviar.getText();
-		String mipuerto = String.valueOf(servidor.getPort());
-		this.txtTexto.append("You: " + mensaje + "\n");
+			Client cliente = new Client(puerto, mipuerto + "$" + mensaje);
+			if (map.containsKey(puerto)) {
+				String conver=map.get(puerto);
+				map.replace(puerto, conver+"\n"+"You: " + mensaje);
+			} else {
+				map.put(puerto, "You: " + mensaje);
+			}
+			
+			System.out.println(map);
+			
+			String[] chats = map.keySet().toArray(new String[map.size()]);
+			jPopupMenu.removeAll();
+			for (int i = 0; i < chats.length; i++) {
+				final int index=i;
+				JMenuItem item = new JMenuItem(chats[i]);
+				item.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						String key = chats[index];
+						System.out.println(key);
+						String conver=map.get(key);
+						txtTexto.setText(conver);
+					}
+				});
+				jPopupMenu.add(item);
+			}
+			this.txtTexto.setText(map.get(puerto));
 
-		Client cliente = new Client(puerto, mipuerto + "$" + mensaje);
-		if (map.containsKey(mipuerto)) {
-			map.replace(puerto, txtTexto.getText());
-		}
-		else {
-			map.put(puerto,txtTexto.getText());
-		}
-		System.out.println(map);
-
-		// historialChats(msj[0], mensaje);
-		Thread t = new Thread(cliente);
-		t.start();
-
-	}// GEN-LAST:event_btnEnviarActionPerformed
-
-	/**
-	 * @param args the command line arguments
-	 * 
-	 */
-
+			// historialChats(msj[0], mensaje);
+			Thread t = new Thread(cliente);
+			t.start();
+			
+		
+	}
 	@Override
 	public void update(Observable o, Object arg) {
 		String mensaje = (String) arg;
-		this.txtTexto.append(mensaje + "\n");
-		String[] mensajeSeparado=separaMensaje(mensaje);
 		
-		if (map.containsKey(mensajeSeparado[0])) {/* This conditions edits the map that has the register of all the chats*/
-			map.replace(mensajeSeparado[0], txtTexto.getText());
+		String[] mensajeSeparado = separaMensaje(mensaje);
+		
+		if (map.containsKey(mensajeSeparado[0])) {/* This conditions edits the map that has the register of all the chats */
+			String conver=map.get(mensajeSeparado[0]);
+			map.replace(mensajeSeparado[0], conver+"\n"+mensaje);
+		} else {
+			map.put(mensajeSeparado[0], mensaje);
 		}
-		else {
-			map.put(mensajeSeparado[0],txtTexto.getText());
+		
+		
+		
+
+		String[] chats = map.keySet().toArray(new String[map.size()]);
+		jPopupMenu.removeAll();
+		for (int i = 0; i < chats.length; i++) {
+			JMenuItem item = new JMenuItem(chats[i]);
+			final int index=i;
+			item.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ev) {
+					String key = chats[index];
+					System.out.println(key);
+					String conver=map.get(key);
+					txtTexto.setText(conver);
+				}
+			});
+			jPopupMenu.add(item);
 		}
+		
+		this.txtTexto.setText(map.get(mensajeSeparado[0])); // Refreshes the text of the conversation 
 		System.out.println(map);
 	}
 
-	
 	public String[] separaMensaje(String mensaje) {
 		/*
-		 * Method that separates the message received from the client into 2 parts: port and message
+		 * Method that separates the message received from the client into 2 parts: port
+		 * and message
 		 */
-		StringTokenizer tokens=new StringTokenizer (mensaje,":"); //Uses $ symbol as separator
+		StringTokenizer tokens = new StringTokenizer(mensaje, ":"); // Uses $ symbol as separator
 		String[] messageArray = new String[tokens.countTokens()];
 		int i = 0;
 		while (tokens.hasMoreTokens()) {
@@ -167,46 +203,13 @@ public class GUI_chat extends javax.swing.JFrame implements Observer {
 			i++;
 		}
 		return messageArray;
-				
+
 	}
-	/*public void historialChats(String Puerto, String mensajes) {
-		try {
-			if (chats.size() == 0) {
-				String[] conver = { Puerto, mensajes };
-				chats.add(conver);
-				String[] elemento = chats.get(0);
-				System.out.println(elemento[1].toString());
-
-			} else {
-				String[] conversacion;
-				int index = 0;
-				for (int i = 0; i < chats.size(); i++) {
-					conversacion = chats.get(index);
-					// System.out.println(conversacion[0].toString());
-					// System.out.println(Puerto);
-					String port = conversacion[0].toString();
-					if (port == Puerto) {
-
-						conversacion[1] = mensajes;
-						chats.set(index, conversacion);
-						String[] elemento = chats.get(index);
-						System.out.println(elemento[1].toString());
-
-					}
-					index++;
-				}
-
-			}
-		} catch (Exception e) {
-			System.out.println("Exception thrown : " + e);
-		}
-
-	}*/
 
 	public static void generaVentanas(int cantidad) {
 		for (int i = 0; i < cantidad; i++) {
 			GUI_sencilla window = new GUI_sencilla();
-			
+
 			Thread hiloChats = new Thread(window);
 			hiloChats.start();
 
